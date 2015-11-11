@@ -59,7 +59,7 @@ centers = init_centers(10, num_rows, num_cols, I, x_mat, y_mat, 1);
 feature_vectors = create_feature_vector(I, centers, num_elems, num_cols, x_mat, y_mat);
 for it=1:5
     
-[clusters, cluster_assigned, sum_values, tot_sqr_sum] = allocate_points_matrices(index, num_elems, feature_vectors, I, centers, 10, num_rows, num_cols, x_mat, y_mat );
+[clusters, cluster_assigned, sum_values, tot_sqr_sum] = allocate_points_matrices(feature_vectors,centers, 10, num_rows, num_cols);
 centers = compute_new_means(centers, sum_values, cluster_assigned);
 fprintf('\n It %d %f \n ', it, tot_sqr_sum);
 
