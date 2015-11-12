@@ -1,4 +1,4 @@
-function [clusters, cluster_assigned, sum_values, tot_sqr_sum] = allocate_points_matrices(index, num_elems, feature_vectors, I, centers, k, num_rows, num_cols, x_mat, y_mat )
+function [clusters, cluster_assigned, sum_values, tot_sqr_sum] = allocate_points_matrices( feature_vectors, centers, k, num_rows, num_cols )
 % assigns the points to its closer center. 
 %returns cluster which is a matrix with the same size as the original image I
 % and assigns the number of the closest cluster center to each pixel.
@@ -17,22 +17,25 @@ distances = [];
     for i = 1:dimFeature(1)
         distances = [];
         for j = 1:dimCen(1)
-            dis = (feature_vectors(i,1) - centers(j,1))^2 + (feature_vectors(i,2) - centers(j,2))^2 + (feature_vectors(i,3) - centers(j,3))^2
-                  (feature_vectors(i,4) - centers(j,4))^2 + (feature_vectors(i,5) - centers(j,5))^2
-            distances = [distances,dis] 
+            dis = (feature_vectors(i,1) - centers(j,1))^2 + (feature_vectors(i,2) - centers(j,2))^2 + (feature_vectors(i,3) - centers(j,3))^2 + (feature_vectors(i,4) - centers(j,4))^2 + (feature_vectors(i,5) - centers(j,5))^2;
+            distances = [distances,dis]; 
         end
         
         [m,mini] = min(distances);
         
         fila = ceil(i/num_cols);
-        aux = mod(num_rows,i);
+        aux = mod(i,num_cols);
+        
         
         if aux == 0
-            columna = 236;
+            columna = 364;
         else
             columna = aux;
-            
-        clusters(columna,fila) = mini;
+        end    
+        clusters(fila,columna) = mini;
+        cluster_assigned(mini) = cluster_assigned(mini) + 1;
+        tot_sqr_sum = tot_sqr_sum + m;
+        sum_values(mini,:) = sum_values(mini,:) + feature_vectors(i,:);
         
     end
 
