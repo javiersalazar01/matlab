@@ -23,6 +23,9 @@
 % 4: Etiqueta cada pixel en la imagen con el cluster que le corresponde
 % 5: Repetir hasta que converja o hasta llegar al num de iteraciones
 % 1. Leer imagen 
+
+k = 20;
+
 image= 'sunset.tiff';
 I1=imread(image);
 %Para desplegar la imagen:
@@ -53,15 +56,37 @@ num_elems = num_rows * num_cols;
 index = generate_xy(num_elems, num_cols);
 % choose the data points for centers, taking the color different points in
 % different segments of the image. 
-centers = init_centers(10, num_rows, num_cols, I, x_mat, y_mat, 1);
+centers = init_centers(k, num_rows, num_cols, I, x_mat, y_mat, 1);
 
 %feature vectors is a matrix where every row is a feature vector
 feature_vectors = create_feature_vector(I, centers, num_elems, num_cols, x_mat, y_mat);
 for it=1:5
    
-[clusters, cluster_assigned, sum_values, tot_sqr_sum] = allocate_points_matrices(feature_vectors,centers, 10, num_rows, num_cols);
+[clusters, cluster_assigned, sum_values, tot_sqr_sum] = allocate_points_matrices(feature_vectors,centers, k, num_rows, num_cols);
 centers = compute_new_means(centers, sum_values, cluster_assigned);
 fprintf('\n It %d %f \n ', it, tot_sqr_sum);
 
 end
+
+
+
+% get back the original color
+for j=1:k
+    for i=1:3
+        centers(j,i) = (centers(j,i) * max_val(i)) - 1;
+        %centers(j,i) = (centers(j,i)* max_val(i))+ min_val(i);
+    end 
+end
+
+% compute new colors
+for i=1:k
+    mask = (clusters ==i);
+    new_image(:,:,1) = new_image(:,:,1) + (mask.* centers(i, 1));
+    new_image(:,:,2) = new_image(:,:,2) + (mask.* centers(i, 2));
+    new_image(:,:,3) = new_image(:,:,3) + (mask.* centers(i, 3));
+end
+
+NI=uint8(new_image);
+figure('name', 'k-means ');
+imshow(NI);
 
