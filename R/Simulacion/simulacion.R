@@ -174,4 +174,7 @@ paste("aciertos Positivos: ", aciertoPosi);
 paste("aciertos negativos ",aciertoNega);
 
 
+x11()
+pairs(raw[,1:5], col=raw[,6])
+
 
